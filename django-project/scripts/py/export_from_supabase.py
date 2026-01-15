@@ -1,3 +1,5 @@
+# TODO: This script can be removed
+
 """
 Script to export data from Supabase to JSON files.
 Run this script to export workers, profiles, and authentication data.

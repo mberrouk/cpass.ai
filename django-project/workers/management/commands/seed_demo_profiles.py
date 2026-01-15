@@ -603,7 +603,9 @@ class Command(BaseCommand):
     def create_demo_profile(self, data):
         """Create or update a demo profile with all related data"""
         email = data["email"]
-        self.stdout.write(f"\nCreating profile: {data['full_name']} ({data['tier'].upper()})")
+        self.stdout.write(
+            f"\nCreating profile: {data['full_name']} ({data['tier'].upper()})"
+        )
 
         user, user_created = CustomUser.objects.update_or_create(
             email=email,
@@ -623,7 +625,6 @@ class Command(BaseCommand):
             self.stdout.write(f"    Created user: {email}")
         else:
             self.stdout.write(f"    Updated user: {email}")
-
 
         profile, profile_created = WorkerProfile.objects.update_or_create(
             user=user,
@@ -651,7 +652,6 @@ class Command(BaseCommand):
             },
         )
 
-
         profile.update_reputation()
 
         if profile_created:
@@ -660,12 +660,12 @@ class Command(BaseCommand):
             self.stdout.write(f" Updated profile")
 
         WorkerSkill.objects.filter(worker=profile).delete()
-        
+
         skills_created = 0
         for skill_data in data["skills"]:
             skill_code = skill_data.get("skill_id", "")
             skill_name = skill_data["skill_name"]
-            
+
             WorkerSkill.objects.create(
                 worker=profile,
                 skill_id=None,  # Leave as None - skill_name is used for matching
@@ -682,9 +682,8 @@ class Command(BaseCommand):
 
         self.stdout.write(f"    Created {skills_created} skills")
 
-
         WorkerCertification.objects.filter(worker=profile).delete()
-        
+
         certs_created = 0
         for cert_data in data["certifications"]:
             WorkerCertification.objects.create(
@@ -700,7 +699,5 @@ class Command(BaseCommand):
             self.stdout.write(f"    Created {certs_created} certifications")
 
         self.stdout.write(
-            self.style.SUCCESS(
-                f"   {data['full_name']} profile complete!"
-            )
+            self.style.SUCCESS(f"   {data['full_name']} profile complete!")
         )

@@ -1,3 +1,5 @@
+# TODO: This script can be removed
+
 """
 Script to import data from Supabase export JSON to Django database.
 Run this after running export_from_supabase.py.
