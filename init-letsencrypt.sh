@@ -4,23 +4,17 @@
 # https://github.com/wmnnd/nginx-certbot
 
 DOMAIN=${DOMAIN:-"cpass.linkpc.net"}
-SUBDOMAIN=${SUBDOMAIN:-"cpass.cpass.linkpc.net"}
+SUBDOMAIN_CPASS=${SUBDOMAIN_CPASS:-"cpass.cpass.linkpc.net"}
+SUBDOMAIN_TVET=${SUBDOMAIN_TVET:-"tvet.cpass.linkpc.net"}
 EMAIL=${EMAIL:-""}
 STAGING=${STAGING:-0}
 
 EMAIL=$(echo "$EMAIL" | tr -d "'\"")
 
-domains=($DOMAIN $SUBDOMAIN)
+domains=($DOMAIN $SUBDOMAIN_CPASS $SUBDOMAIN_TVET)
 rsa_key_size=4096
 data_path="./certbot"
 staging=$STAGING
-
-echo "=== Let's Encrypt Certificate Setup ==="
-echo "Primary domain: $DOMAIN"
-echo "Subdomain: $SUBDOMAIN"
-echo "Email: ${EMAIL:-'(none - will register without email)'}"
-echo "Staging mode: $STAGING"
-echo ""
 
 if [ -f "$data_path/conf/live/$DOMAIN/fullchain.pem" ]; then
   echo "Certificates already exist for $DOMAIN. Skipping initialization."
