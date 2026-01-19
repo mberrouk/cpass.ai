@@ -12,8 +12,9 @@ This creates demo TVET institutions with API keys for testing.
 import json
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from workers.models import TVETInstitution, WorkerProfile, WorkerSkill
 
+from workers.users_models import WorkerProfile, WorkerSkill
+from workers.tvet_models import TVETInstitution
 
 DEMO_INSTITUTIONS = [
     {
@@ -23,7 +24,7 @@ DEMO_INSTITUTIONS = [
         "location": "Kiambu, Kenya",
         "country": "Kenya",
         "contact_person": "John Mwangi",
-        "contact_email": "admin@kist.ac.ke",
+        "contact_email": "admin@kiambu.ac.ke",
         "contact_phone": "+254700000001",
     },
     {
@@ -33,7 +34,7 @@ DEMO_INSTITUTIONS = [
         "location": "Nakuru, Kenya",
         "country": "Kenya",
         "contact_person": "Jane Wanjiru",
-        "contact_email": "admin@nakurutti.ac.ke",
+        "contact_email": "admin@nakuru.ac.ke",
         "contact_phone": "+254700000002",
     },
     {
@@ -43,7 +44,7 @@ DEMO_INSTITUTIONS = [
         "location": "Mombasa, Kenya",
         "country": "Kenya",
         "contact_person": "Ahmed Hassan",
-        "contact_email": "admin@mtu.ac.ke",
+        "contact_email": "admin@mombasa.ac.ke",
         "contact_phone": "+254700000003",
     },
 ]
@@ -191,6 +192,7 @@ class Command(BaseCommand):
             self.stdout.write("")
 
         # Create demo workers if requested
+        # TODO: This is not used any more since workers will be created using a separate command
         if with_workers:
             self.stdout.write(self.style.NOTICE("Creating demo workers..."))
             self.stdout.write("")

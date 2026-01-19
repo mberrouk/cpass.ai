@@ -1,19 +1,16 @@
 """
-Models matching the Supabase schema for workers, profiles, and authentication.
-Preserves all logic from Supabase including RLS policies as Django permissions.
-Enhanced with Public API support for external integrations.
+Models for worker profiles, skills, and certifications.
 """
 
 import uuid
-import hashlib
-import secrets
 from django.contrib.auth.models import (
     AbstractBaseUser,
     BaseUserManager,
     PermissionsMixin,
 )
 from django.db import models
-from django.utils import timezone
+
+from .tvet_models import TVETInstitution
 
 
 class CustomUserManager(BaseUserManager):
@@ -34,6 +31,9 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+
+    # TODO: This model is going to be extended in future for different user types,
+    # consider refactoring into separate models if needed.
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
@@ -67,85 +67,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
-
-
-class TVETInstitution(models.Model):
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    institution_code = models.CharField(max_length=50, unique=True)
-    institution_name = models.CharField(max_length=255)
-    institution_type = models.CharField(
-        max_length=50, blank=True, null=True
-    )  # e.g., 'TVET', 'University'
-    location = models.CharField(max_length=255, blank=True, null=True)
-    country = models.CharField(max_length=100, blank=True, null=True)
-    contact_person = models.CharField(max_length=255, blank=True, null=True)
-    contact_email = models.EmailField(blank=True, null=True)
-    contact_phone = models.CharField(max_length=20, blank=True, null=True)
-
-    # API Key authentication
-    api_key_hash = models.CharField(max_length=64, blank=True, null=True, db_index=True)
-    api_key_created_at = models.DateTimeField(blank=True, null=True)
-    is_api_active = models.BooleanField(default=False)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = "tvet_institutions"
-        verbose_name = "TVET Institution"
-        verbose_name_plural = "TVET Institutions"
-
-    def __str__(self):
-        return f"{self.institution_name} ({self.institution_code})"
-
-    def generate_api_key(self) -> str:
-
-        random_token = secrets.token_hex(16)
-        raw_key = f"tvet_{self.institution_code}_{random_token}"
-
-        self.api_key_hash = hashlib.sha256(raw_key.encode()).hexdigest()
-        self.api_key_created_at = timezone.now()
-        self.is_api_active = True
-        self.save(update_fields=["api_key_hash", "api_key_created_at", "is_api_active"])
-
-        return raw_key
-
-    def verify_api_key(self, raw_key: str) -> bool:
-        if not self.api_key_hash or not self.is_api_active:
-            return False
-        key_hash = hashlib.sha256(raw_key.encode()).hexdigest()
-        return key_hash == self.api_key_hash
-
-    def revoke_api_key(self):
-        self.is_api_active = False
-        self.save(update_fields=["is_api_active"])
-
-
-class TVETAuth(models.Model):
-    """
-    Links users to TVET institutions matching Supabase tvet_auth.
-    """
-
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, related_name="tvet_auth"
-    )
-    institution = models.ForeignKey(
-        TVETInstitution, on_delete=models.CASCADE, related_name="auth_records"
-    )
-    role = models.CharField(max_length=50, default="staff")
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = "tvet_auth"
-        verbose_name = "TVET Auth"
-        verbose_name_plural = "TVET Auths"
-        unique_together = [["user", "institution"]]
-
-    def __str__(self):
-        return f"{self.user.email} - {self.institution.institution_code}"
 
 
 class WorkerProfile(models.Model):
@@ -255,7 +176,7 @@ class WorkerProfile(models.Model):
         return round((self.total_tasks_completed / self.total_tasks_assigned) * 100, 2)
 
     def update_reputation(self):
-        # Formula: (average_rating * 20) + (completion_rate * 10 / 100)
+        # (average_rating * 20) + (completion_rate * 10 / 100)
         rating_component = float(self.average_rating) * 20
         completion_component = self.completion_rate * 0.1
         self.reputation_score = round(rating_component + completion_component, 2)
@@ -393,3 +314,31 @@ class WorkerDomain(models.Model):
 
     def __str__(self):
         return f"{self.worker.full_name} - {self.domain_name}"
+
+
+class TVETAuth(models.Model):
+    """
+    Links users to TVET institutions matching Supabase tvet_auth.
+    """
+
+    # TODO: This is a temporary model for TVET authentication, should be updated once the frontend is ready.
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="tvet_auth"
+    )
+    institution = models.ForeignKey(
+        TVETInstitution, on_delete=models.CASCADE, related_name="auth_records"
+    )
+    role = models.CharField(max_length=50, default="staff")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "tvet_auth"
+        verbose_name = "TVET Auth"
+        verbose_name_plural = "TVET Auths"
+        unique_together = [["user", "institution"]]
+
+    def __str__(self):
+        return f"{self.user.email} - {self.institution.institution_code}"

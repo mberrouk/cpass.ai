@@ -4,7 +4,7 @@ Utility functions for Telegram bot operations
 
 from typing import Optional, Dict, List
 from asgiref.sync import sync_to_async
-from workers.models import CustomUser as User, WorkerProfile
+from workers.users_models import CustomUser as User, WorkerProfile
 from telegram_bot.models import ConversationState
 from work_management.models import Task, TaskProgress, Rating, Role
 

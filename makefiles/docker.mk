@@ -1,6 +1,7 @@
 ##@ Docker containers management (local development):
 
-DCOMPOSE = docker compose -f dockercompose.dev.local.yml
+COMPOSE_FILE ?= dockercompose.dev.local.yml
+DCOMPOSE = docker compose -f $(COMPOSE_FILE)
 
 RED := \033[31m
 GREEN := \033[32m
@@ -8,7 +9,7 @@ YELLOW := \033[33m
 BLUE := \033[34m
 RESET := \033[0m
 
-DJANGO_APP_CONTAINER = django-app
+DJANGO_APP_CONTAINER ?= django-app
 DJANGO_SETTINGS_MODULE = config.settings.dev
 
 # containers management
@@ -50,11 +51,12 @@ purge: ## purges all docker data (containers, images, volumes, networks)
 	@echo "${YELLOW}Are you sure you want to purge all data? [y/N]${RESET} "
 	@read confirm;                                                                \
 	if [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ]; then                       \
-		echo "${YELLOW}Purging all data...${RESET}";                                \
-		docker stop $$(docker ps -aq) &&                                            \
+		echo "${BLUE}Stop all docker containers...${RESET}";                        \
+		docker stop $$(docker ps -aq);                                              \
+		echo "${BLUE}Purging all data...${RESET}";                                  \
 		docker system prune -af       &&                                            \
 		docker builder prune -af      &&                                            \
-		echo "${GREEN}All data purged successfully!${RESET}";                       \
+		echo "${GREEN}All data purged successfully.${RESET}";                       \
 	else                                                                          \
 		echo "${RED}Purge cancelled.${RESET}";                                      \
 	fi

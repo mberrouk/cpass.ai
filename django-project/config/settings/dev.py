@@ -4,9 +4,6 @@ Dev settings.
 
 from .base import *
 
-# SECRET_KEY = getenv(
-#     "SECRET_KEY", "django-insecure-infjlp7u9_5yvct+9l+irwp@oh4n1f+*a-btzul&&hskrfd=2e"
-# )
 DEBUG = True
 
 # CORS settings
@@ -16,6 +13,9 @@ CORS_ALLOWED_ORIGINS = getenv(
 ).split(",")
 
 ALLOWED_HOSTS = ["*"]
+
+print("DEBUG INSTALLED APP = ", INSTALLED_APPS)
+# quit()
 
 DATABASES = {
     "default": {

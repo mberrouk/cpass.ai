@@ -74,6 +74,7 @@ export default function RPLCandidatesTabDjango() {
   });
 
   const candidates = candidatesData?.candidates || [];
+  console.log('RPL Candidates :', candidates);
 
   // Contact mutation
   const contactMutation = useMutation({

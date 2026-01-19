@@ -65,7 +65,6 @@ const App = () => (
             <Route path="/dashboard/tvet-django" element={<TVETDashboardNewDjango />} />
             <Route path="/login/tvet-django" element={<TVETLoginDjango />} />
 
-
             {/* Telegram Mini App routes */}
             <Route path="/worker-dashboard-telegram" element={<WorkerDashboardTelegram />} />
             <Route path="/signup/basic-info-telegram" element={<BasicInfoTelegram />} />

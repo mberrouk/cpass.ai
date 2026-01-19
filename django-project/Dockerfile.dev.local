@@ -16,5 +16,5 @@ RUN mkdir -p /app/staticfiles /app/mediafiles
 
 EXPOSE 8000
 #
-CMD ["bash", "entrypoint.sh"]
+CMD ["bash", "entrypoint.dev.sh"]
 # CMD ["tail", "-f", "/dev/null"]

@@ -22,3 +22,8 @@ venv/
 db.*
 **/migrations/**
 !**/migrations/__init__.py
+
+staticfiles/
+node_modules/
+dist/
+build/

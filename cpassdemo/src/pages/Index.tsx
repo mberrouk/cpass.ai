@@ -28,7 +28,7 @@ const Index = () => {
       title: "TVET Institution",
       description: "Find RPL candidates. Track student WBL progress. Validate alumni career outcomes.",
       icon: GraduationCap,
-      path: "/login/tvet",
+      path: "/login/tvet-django",
       colorClass: "bg-portal-tvet",
       hoverShadow: "hover:shadow-[0_20px_40px_-12px_hsl(37_90%_45%/0.35)]",
     },

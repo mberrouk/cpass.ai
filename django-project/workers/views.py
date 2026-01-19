@@ -14,14 +14,12 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.db import transaction
 from telegram_bot.models import ContactVerification
-from .models import (
+from .users_models import (
     CustomUser,
     WorkerProfile,
     WorkerSkill,
     WorkerCertification,
     WorkerDomain,
-    TVETInstitution,
-    TVETAuth,
 )
 from .serializers import (
     CustomUserSerializer,
@@ -31,6 +29,10 @@ from .serializers import (
     AuthResponseSerializer,
     TVETInstitutionSerializer,
     TVETAuthSerializer,
+    TVETAuth,
+)
+from .tvet_models import (
+    TVETInstitution,
 )
 
 
@@ -110,7 +112,9 @@ def signup(request):
                     tvet_institution = TVETInstitution.objects.get(
                         id=tvet_institution_id
                     )
+                    print("DEBUG Found TVET Institution:", tvet_institution)
                 except TVETInstitution.DoesNotExist:
+                    print("DEBUG Invalid TVET Institution ID:", tvet_institution_id)
                     pass  # TODO: handle invalid institution IDs
 
             profile = WorkerProfile.objects.create(
@@ -135,7 +139,7 @@ def signup(request):
                 invitation_code=data.get("invitation_code", ""),
                 upload_source="self_registration",
                 claimed_institution=tvet_institution,
-                verification_status="pending" if tvet_institution else "pending",
+                verification_status="pending" if tvet_institution else "pending", # TODO: adjust logic as needed
             )
 
             skills_data = data.get("skills", [])

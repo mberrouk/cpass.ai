@@ -5,16 +5,17 @@ Base settings
 from datetime import timedelta
 from os import getenv
 from pathlib import Path
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
+
 # from corsheaders.defaults import default_headers
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-load_dotenv()
+# load_dotenv()
 
-SECRET_KEY = getenv(
-    "SECRET_KEY", "django-insecure-infjlp7u9_5yvct+9l+irwp@oh4n1f+*a-btzul&&hskrfd=2e"
-)
+SECRET_KEY = getenv("SECRET_KEY", None)
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable not set")
 
 # Application definition
 DEFAULT_APPS = [
@@ -69,12 +70,12 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # TODO:
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": BASE_DIR / "db.sqlite3",
+#     }
+# }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -97,10 +98,10 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-# STATIC_ROOT = BASE_DIR / "webapp"
+
 STATICFILES_DIRS = [
     BASE_DIR / "webapp" / "static",
 ]
@@ -142,11 +143,14 @@ CORS_ALLOW_CREDENTIALS = True
 AUTH_USER_MODEL = "workers.CustomUser"
 
 # Telegram Bot Configuration
-TELEGRAM_BOT_TOKEN = getenv("TELEGRAM_BOT_TOKEN", "")
-print(f"TELEGRAM_BOT_TOKEN: {TELEGRAM_BOT_TOKEN}")
-CPASS_URL = getenv("CPASS_URL", "http://localhost:8080")
+TELEGRAM_BOT_TOKEN = getenv("TELEGRAM_BOT_TOKEN", None)
+if not TELEGRAM_BOT_TOKEN:
+    raise ValueError("TELEGRAM_BOT_TOKEN environment variable not set")
 
-# Media files (User uploads)
+CPASS_URL = getenv("CPASS_URL", None)
+if not CPASS_URL:
+    raise ValueError("CPASS_URL environment variable not set")
+
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "mediafiles"
 

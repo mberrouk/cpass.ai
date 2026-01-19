@@ -17,6 +17,7 @@ services:
     volumes:
       - static_volume:/app/staticfiles
       - media_volume:/app/mediafiles
+      - ./shared:/shared
     expose:
       - "8000"
     # depends_on:
@@ -24,6 +25,13 @@ services:
     #     condition: service_completed_successfully
     networks:
       - cpass_net
+
+    healthcheck: # TODO:
+      test: ["CMD", "test", "-f", "/shared/.demo_institutions.json"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
     # healthcheck:
     #   test: ["CMD", "curl", "-f", "http://localhost:8000/"]
     #   interval: 30s
@@ -31,20 +39,7 @@ services:
     #   retries: 3
     #   start_period: 30s
     environment:
-      # DJANGO_SECRET_KEY   : ${DJANGO_SECRET_KEY}
-      # DEBUG               : ${DEBUG}
-      # DJANGO_LOGLEVEL     : ${DJANGO_LOGLEVEL}
-      # DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
-
       TELEGRAM_BOT_TOKEN  : ${TELEGRAM_BOT_TOKEN}
-
-      # DATABASE_ENGINE     : ${DATABASE_ENGINE}
-      # DATABASE_NAME       : ${DATABASE_NAME}
-      # DATABASE_USERNAME   : ${DATABASE_USERNAME}
-
-      # DATABASE_PASSWORD   : ${DATABASE_PASSWORD}
-      # DATABASE_HOST       : ${DATABASE_HOST}
-      # DATABASE_PORT       : ${DATABASE_PORT}
     env_file:
       - .env
 
@@ -86,10 +81,27 @@ services:
     container_name: react-app
     volumes:
       - react_build:/app/dist
-    command: tail -f /dev/null  # Keep container running
+    command: tail -f /dev/null
     networks:
       - cpass_net
     restart: unless-stopped
+
+  tvet-backend-app:
+    build:
+      context: ./tvet_django_project
+      dockerfile: Dockerfile
+    container_name: tvet-django-app
+    depends_on:
+      backend-app:
+        condition: service_healthy
+    volumes:
+      - ./shared:/shared
+    ports:
+      - "8001:8001"
+    networks:
+      - cpass_net
+    env_file:
+      - .env
 
 networks:
   cpass_net:

@@ -5,7 +5,7 @@ Models for managing jobs, tasks, and progress tracking in the work management sy
 from django.db import models
 from django.db.models import Avg
 from django.core.validators import MinValueValidator, MaxValueValidator
-from workers.models import CustomUser as User, WorkerProfile
+from workers.users_models import CustomUser as User, WorkerProfile
 from core.abstracts import CreatedModifiedAbstract
 
 

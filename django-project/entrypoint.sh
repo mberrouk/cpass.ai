@@ -12,10 +12,16 @@ python $MANAGE migrate $SETTINGS
 
 # Seed initial data
 python $MANAGE seed_categories_jobs $SETTINGS
-# TODO: Seed demo data for demo profiles and institutions
+
+# Export demo institutions with API keys to shared JSON
+SHARED_JSON='/shared/.demo_institutions.json'
+
+python $MANAGE seed_demo_institutions \
+--with-workers \
+--output-json "$SHARED_JSON" $SETTINGS
 
 python $MANAGE runbot $SETTINGS &
-python $MANAGE runserver 0.0.0.0:8000 $SETTINGS &
+python $MANAGE runserver $LISTENINGADDR $SETTINGS & #TODO: switch to gunicorn for production
 
 wait -n
 exit $?

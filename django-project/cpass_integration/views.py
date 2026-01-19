@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.utils import timezone
-from workers.models import CustomUser as User, WorkerProfile
+from workers.users_models import CustomUser as User, WorkerProfile
 from work_management.models import Role
 from telegram_bot.models import ConversationState, ContactVerification
 import logging

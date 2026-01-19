@@ -16,7 +16,7 @@ from .serializers import (
     JobCategorySerializer,
     JobSerializer,
 )
-from workers.models import CustomUser as User
+from workers.users_models import CustomUser as User
 from telegram_bot.notifications import (
     notify_task_assigned,
     notify_task_status_updated,

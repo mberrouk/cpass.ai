@@ -24,7 +24,8 @@ from django.utils import timezone
 from django.db.models import Count, Q
 
 from .api_auth import APIKeyAuthentication
-from .models import WorkerProfile, WorkerSkill, TVETInstitution
+from .users_models import WorkerProfile, WorkerSkill
+from .tvet_models import TVETInstitution
 
 
 class IsAPIKeyAuthenticated(BasePermission):

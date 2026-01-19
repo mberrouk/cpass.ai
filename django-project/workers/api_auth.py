@@ -1,22 +1,20 @@
 """
 API Key Authentication for CPASS Public API.
-
-TVET institutions and other external applications authenticate
-using API keys passed in the X-API-Key header.
-
-API Key Format: tvet_INSTITUTIONCODE_randomtoken
-Example: tvet_KIAMBU001_a1b2c3d4e5f6...
+External applications authenticate using API keys passed in the X-API-Key header.
 """
 
 import hashlib
 from rest_framework import authentication, exceptions
-from .models import TVETInstitution
+from .tvet_models import TVETInstitution
 
 
 class APIKeyAuthentication(authentication.BaseAuthentication):
     """
     Custom authentication class for external API consumers.
     """
+
+    # TODO: This is a basic implementation, used for tvet institutions only.
+    # In future, consider more robust API key management.
 
     def authenticate(self, request):
         api_key = request.META.get("HTTP_X_API_KEY")
@@ -32,7 +30,6 @@ class APIKeyAuthentication(authentication.BaseAuthentication):
         except Exception:
             raise exceptions.AuthenticationFailed("Invalid API key format")
 
-
         try:
             institution = TVETInstitution.objects.get(
                 institution_code=institution_code, is_api_active=True
@@ -41,7 +38,6 @@ class APIKeyAuthentication(authentication.BaseAuthentication):
             raise exceptions.AuthenticationFailed(
                 "Invalid API key or institution not found"
             )
-
 
         if not institution.verify_api_key(api_key):
             raise exceptions.AuthenticationFailed("Invalid API key")

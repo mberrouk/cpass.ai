@@ -9,7 +9,7 @@ The API key will be displayed once - store it securely!
 """
 
 from django.core.management.base import BaseCommand, CommandError
-from workers.models import TVETInstitution
+from workers.tvet_models import TVETInstitution
 
 
 class Command(BaseCommand):

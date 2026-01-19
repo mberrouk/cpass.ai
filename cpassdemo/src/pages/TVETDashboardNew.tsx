@@ -52,8 +52,8 @@ export default function TVETDashboardNew() {
   });
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate('/login/tvet');
+    // await supabase.auth.signOut();
+    navigate('/login/tvet-django');
   };
 
   return (

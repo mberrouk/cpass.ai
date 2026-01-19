@@ -3,14 +3,16 @@ Django admin configuration for workers app.
 """
 
 from django.contrib import admin
-from .models import (
+from .users_models import (
     CustomUser,
     WorkerProfile,
     WorkerSkill,
     WorkerCertification,
     WorkerDomain,
-    TVETInstitution,
     TVETAuth,
+)
+from .tvet_models import (
+    TVETInstitution,
 )
 
 
@@ -64,7 +66,13 @@ class WorkerProfileAdmin(admin.ModelAdmin):
         "verification_status",
     ]
     search_fields = ["full_name", "phone_number", "email"]
-    list_filter = ["tier", "work_status", "upload_source", "verification_status", "claimed_institution"]
+    list_filter = [
+        "tier",
+        "work_status",
+        "upload_source",
+        "verification_status",
+        "claimed_institution",
+    ]
     readonly_fields = ["id", "created_at", "updated_at"]
     inlines = [WorkerSkillInline, WorkerCertificationInline, WorkerDomainInline]
 
@@ -93,17 +101,29 @@ class TVETInstitutionAdmin(admin.ModelAdmin):
     list_filter = ["is_api_active"]
     readonly_fields = ["id", "created_at", "updated_at", "api_key_created_at"]
     fieldsets = (
-        (None, {
-            'fields': ('institution_code', 'institution_name', 'location', 'contact_email', 'contact_phone')
-        }),
-        ('API Access', {
-            'fields': ('is_api_active', 'api_key_hash', 'api_key_created_at'),
-            'description': 'API key management. Use generate_tvet_apikey command to generate keys.'
-        }),
-        ('Metadata', {
-            'fields': ('id', 'created_at', 'updated_at'),
-            'classes': ('collapse',)
-        }),
+        (
+            None,
+            {
+                "fields": (
+                    "institution_code",
+                    "institution_name",
+                    "location",
+                    "contact_email",
+                    "contact_phone",
+                )
+            },
+        ),
+        (
+            "API Access",
+            {
+                "fields": ("is_api_active", "api_key_hash", "api_key_created_at"),
+                "description": "API key management. Use generate_tvet_apikey command to generate keys.",
+            },
+        ),
+        (
+            "Metadata",
+            {"fields": ("id", "created_at", "updated_at"), "classes": ("collapse",)},
+        ),
     )
 
 

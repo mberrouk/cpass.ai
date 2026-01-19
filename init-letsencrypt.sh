@@ -3,7 +3,6 @@
 # Script to initialize Let's Encrypt SSL certificates
 # https://github.com/wmnnd/nginx-certbot
 
-# Read from environment or use defaults
 DOMAIN=${DOMAIN:-"cpass.linkpc.net"}
 SUBDOMAIN=${SUBDOMAIN:-"cpass.cpass.linkpc.net"}
 EMAIL=${EMAIL:-""}

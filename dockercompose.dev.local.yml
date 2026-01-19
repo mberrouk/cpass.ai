@@ -8,7 +8,6 @@ services:
   #     - .env
   #   networks:
   #       - cpass_net
-
   backend-app:
     build:
       context: ./django-project
@@ -16,6 +15,7 @@ services:
     container_name: django-app
     volumes:
       - ./django-project:/app
+      - ./shared:/shared
     ports:
       - "8000:8000"
     # depends_on:
@@ -23,27 +23,32 @@ services:
     #     condition: service_completed_successfully
     networks:
       - cpass_net
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:8000/"]
-    #   interval: 30s
-    #   timeout: 10s
-    #   retries: 3
-    #   start_period: 30s
+    healthcheck:
+      test: ["CMD", "test", "-f", "/shared/.demo_institutions.json"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 10s
     environment:
-      # DJANGO_SECRET_KEY   : ${DJANGO_SECRET_KEY}
-      # DEBUG               : ${DEBUG}
-      # DJANGO_LOGLEVEL     : ${DJANGO_LOGLEVEL}
-      # DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      DJANGO_SETTINGS_MODULE : config.settings.dev
+    env_file:
+      - .env
 
-      TELEGRAM_BOT_TOKEN  : ${TELEGRAM_BOT_TOKEN}
-
-      # DATABASE_ENGINE     : ${DATABASE_ENGINE}
-      # DATABASE_NAME       : ${DATABASE_NAME}
-      # DATABASE_USERNAME   : ${DATABASE_USERNAME}
-
-      # DATABASE_PASSWORD   : ${DATABASE_PASSWORD}
-      # DATABASE_HOST       : ${DATABASE_HOST}
-      # DATABASE_PORT       : ${DATABASE_PORT}
+  tvet-backend-app:
+    build:
+      context: ./tvet_django_project
+      dockerfile: Dockerfile.dev.local
+    container_name: tvet-django-app
+    depends_on:
+      backend-app:
+        condition: service_healthy
+    volumes:
+      - ./tvet_django_project:/app
+      - ./shared:/shared
+    ports:
+      - "8001:8001"
+    networks:
+      - cpass_net
     env_file:
       - .env
 
@@ -56,10 +61,10 @@ services:
       - ./cpassdemo:/app
     ports:
       - "8080:8080"
-    # command: tail -f /dev/null  # Keep container running
+    # command: tail -f /dev/null
     networks:
       - cpass_net
-    restart: unless-stopped
+    restart: 'unless-stopped'
 
 networks:
   cpass_net:

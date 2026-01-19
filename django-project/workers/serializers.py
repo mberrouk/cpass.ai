@@ -3,14 +3,16 @@ Serializers matching Supabase API responses.
 """
 
 from rest_framework import serializers
-from .models import (
+from .users_models import (
     CustomUser,
     WorkerProfile,
     WorkerSkill,
     WorkerCertification,
     WorkerDomain,
-    TVETInstitution,
     TVETAuth,
+)
+from .tvet_models import (
+    TVETInstitution,
 )
 
 
@@ -159,6 +161,7 @@ class AuthResponseSerializer(serializers.Serializer):
     expires_in = serializers.IntegerField()
     token_type = serializers.CharField()
     user = CustomUserSerializer()
+
 
 class TVETInstitutionSerializer(serializers.ModelSerializer):
 

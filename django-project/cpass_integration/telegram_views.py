@@ -14,7 +14,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from telegram_bot.models import ContactVerification
-from workers.models import WorkerProfile
+from workers.users_models import WorkerProfile
 from .auth_tokens import validate_auth_token, generate_auth_token
 
 User = get_user_model()
@@ -23,8 +23,7 @@ User = get_user_model()
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def generate_token(request):
-    """
-    """
+    """ """
     telegram_id = request.data.get("telegram_id")
     phone_number = request.data.get("phone_number", "")
 
@@ -117,10 +116,7 @@ def validate_webapp_data(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def telegram_auth(request):
-    """
-    """
-    print("DEBUG: telegram_auth called", request.data)  # TODO: DEBUG LINE
-
+    """ """
     auth_token = request.data.get("token")
     if auth_token:
         token_data = validate_auth_token(auth_token)
@@ -255,8 +251,7 @@ def telegram_auth(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def signup_status(request):
-    """
-    """
+    """ """
     telegram_id = request.query_params.get("telegram_id")
     if not telegram_id:
         return Response(
@@ -296,8 +291,7 @@ def signup_status(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def get_or_create_worker_profile(request):
-    """
-    """
+    """ """
     telegram_id = request.data.get("telegram_id")
     phone_number = request.data.get("phone_number")
 
@@ -307,7 +301,6 @@ def get_or_create_worker_profile(request):
         )
 
     try:
-        # Get or create user
         user = User.objects.filter(telegram_id=telegram_id).first()
         if not user:
             return Response(
@@ -315,7 +308,6 @@ def get_or_create_worker_profile(request):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Get or create worker profile
         worker_profile, created = WorkerProfile.objects.get_or_create(
             user=user,
             defaults={

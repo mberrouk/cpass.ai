@@ -10,7 +10,7 @@ from django.conf import settings
 from asgiref.sync import sync_to_async
 from cpass_integration.auth_tokens import generate_auth_token
 
-from workers.models import CustomUser as User
+from workers.users_models import CustomUser as User
 from work_management.models import Task, Role
 from telegram_bot.models import ContactVerification
 from telegram_bot.notifications import send_telegram_notification, notify_task_completed

@@ -49,7 +49,7 @@ export default function ConfirmInvite() {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Organization confirmation */}
-          <div className="p-4 bg-success/10 border border-success/20 rounded-lg">
+          {/* <div className="p-4 bg-success/10 border border-success/20 rounded-lg">
             <div className="flex items-start gap-3">
               <CheckCircle2 className="w-5 h-5 text-success mt-0.5" />
               <div>
@@ -62,7 +62,7 @@ export default function ConfirmInvite() {
                 </p>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {!codeSent ? (
             <>
